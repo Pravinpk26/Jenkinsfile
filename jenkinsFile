@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    environment {
+        GIT_REPO = 'git@github.com:mviiitech-education/my-web-server.git'  // Your GitHub repo
+        GIT_CREDENTIALS = 'github-ssh-key'  // The SSH credentials ID you added in Jenkins
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                script {
+                    // Cloning the repository using SSH credentials
+                    git url: "${GIT_REPO}", credentialsId: "${GIT_CREDENTIALS}"
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    // Run build command, replace with the actual build command for your app
+                    sh 'npm install'  // For Node.js projects
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    // Run test command, replace with the actual test command for your app
+                    sh 'npm test'  // For Node.js projects
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+        success {
+            echo 'Build and tests succeeded!'
+        }
+        failure {
+            echo 'Build failed.'
+        }
+    }
+}
